@@ -8,12 +8,20 @@ import pandas as pd
 from itertools import combinations
 import matplotlib.pyplot as plt
 
-def get_dataset_pairs():
-    """Get all code-wav pairs from the dataset folder"""
+def get_dataset_pairs(max_samples=None):
+    """Get all code-wav pairs from the dataset folder
+    
+    Args:
+        max_samples (int, optional): Maximum number of pairs to return. If None, return all pairs.
+    """
     pairs = []
     dataset_path = "dataset"
     
     for example_name in os.listdir(dataset_path):
+        # Break if we've reached max_samples
+        if max_samples and len(pairs) >= max_samples:
+            break
+            
         example_dir = os.path.join(dataset_path, example_name)
         if os.path.isdir(example_dir):
             # Find the code file (assuming it ends with .pi)
