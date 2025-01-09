@@ -6,10 +6,13 @@ import pandas as pd
 from itertools import combinations
 import matplotlib.pyplot as plt
 
-def get_acid_variations():
-    """Get all acid variations from database2--acid folder"""
+def get_acid_variations(base_path="database2_acid"):
+    """Get all variations from the specified database folder
+    
+    Args:
+        base_path (str): Path to the database folder (default: "database2_acid")
+    """
     pairs = []
-    base_path = "database2_acid"
     
     for variant_dir in os.listdir(base_path):
         if variant_dir.startswith("acid"):
@@ -28,8 +31,8 @@ def get_acid_variations():
     
     return pairs
 
-def analyze_acid_variations():
-    pairs = get_acid_variations()
+def analyze_acid_variations(database_path="database2_acid"):
+    pairs = get_acid_variations(database_path)
     code_embeddings = {}
     wav_embeddings = {}
     
