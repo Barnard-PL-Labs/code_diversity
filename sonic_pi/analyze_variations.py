@@ -6,32 +6,40 @@ import pandas as pd
 from itertools import combinations
 import matplotlib.pyplot as plt
 
-def get_acid_variations(base_path="database2_acid"):
+def get_acid_variations(base_path="dataset_vari"):
     """Get all variations from the specified database folder
     
     Args:
-        base_path (str): Path to the database folder (default: "database2_acid")
+        base_path (str): Path to the dataset folder (default: "dataset_vari")
     """
     pairs = []
     
     for variant_dir in os.listdir(base_path):
-        if variant_dir.startswith("acid"):
-            variant_path = os.path.join(base_path, variant_dir)
-            if os.path.isdir(variant_path):
-                # Find the code file and wav file
-                code_file = next((f for f in os.listdir(variant_path) if f.endswith('.rb')), None)
-                wav_file = next((f for f in os.listdir(variant_path) if f.endswith('.wav')), None)
-                
-                if code_file and wav_file:
-                    pairs.append({
-                        'name': variant_dir,
-                        'code_path': os.path.join(variant_path, code_file),
-                        'wav_path': os.path.join(variant_path, wav_file)
-                    })
+        # Skip the organize script
+        if variant_dir == "organize.sh":
+            continue
+            
+        variant_path = os.path.join(base_path, variant_dir)
+        if os.path.isdir(variant_path):
+            # Find the code file and wav file
+            code_file = next((f for f in os.listdir(variant_path) if f.endswith('.rb') or f.endswith('.pi')), None)
+            wav_file = next((f for f in os.listdir(variant_path) if f.endswith('.wav')), None)
+            
+            if code_file and wav_file:
+                pairs.append({
+                    'name': variant_dir,
+                    'code_path': os.path.join(variant_path, code_file),
+                    'wav_path': os.path.join(variant_path, wav_file)
+                })
     
     return pairs
 
-def analyze_acid_variations(database_path="database2_acid"):
+def analyze_variations(database_path="dataset_vari"):
+    """Analyze variations in the dataset
+    
+    Args:
+        database_path (str): Path to the dataset folder (default: "dataset_vari")
+    """
     pairs = get_acid_variations(database_path)
     code_embeddings = {}
     wav_embeddings = {}
@@ -60,25 +68,25 @@ def analyze_acid_variations(database_path="database2_acid"):
         })
     
     df = pd.DataFrame(results)
-    df.to_csv('acid_variations_analysis.csv', index=False)
+    df.to_csv('variations_analysis.csv', index=False)
     
     # Plot results
     plt.figure(figsize=(10, 6))
     plt.scatter(df['code_distance'], df['wav_distance'])
     plt.xlabel('Distance in Code Space')
     plt.ylabel('Distance in WAV Space')
-    plt.title('Code vs WAV Distances for Acid Variations')
+    plt.title('Code vs WAV Distances for Variations')
     
     # Add annotations for each point
     for i, row in df.iterrows():
         plt.annotate(row['pair'], (row['code_distance'], row['wav_distance']))
     
-    plt.savefig('acid_variations_correlation.png')
+    plt.savefig('variations_correlation.png')
     plt.close()
     
     return df
 
 if __name__ == "__main__":
-    df = analyze_acid_variations()
-    print("\nPairwise Distances for Acid Variations:")
+    df = analyze_variations()
+    print("\nPairwise Distances for Variations:")
     print(df) 
