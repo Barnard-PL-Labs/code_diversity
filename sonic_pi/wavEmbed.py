@@ -42,10 +42,3 @@ def compute_wav_similarity(wav_file1, wav_file2):
     # Compute cosine similarity
     similarity = torch.nn.functional.cosine_similarity(emb1, emb2)
     return float(similarity[0])  # Convert from tensor to float
-
-# Example usage
-wav1 = "dataset/Haunted/test.wav"
-wav2 = "dataset/Haunted/test2.wav"
-similarity = compute_wav_similarity(wav1, wav2)
-print(f"Similarity score: {similarity:.4f}")
-    
